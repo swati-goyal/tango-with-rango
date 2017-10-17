@@ -1,9 +1,8 @@
-from django.shortcuts import render
-from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from rango.models import Category, Page
 from rango.forms import CategoryForm, PageForm
+from django.views.decorators.csrf import ensure_csrf_cookie, requires_csrf_token
 
 
 def index(request):
@@ -33,11 +32,13 @@ def category(request, category_name_url):
         context_dict['category'] = category
     except Category.DoesNotExist:
         pass
+
     return render_to_response('rango/category.html', context_dict, context)
 
 
+@ensure_csrf_cookie
+@requires_csrf_token
 def add_category(request):
-    context = RequestContext(request)
     # A HTTP POST?
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -50,4 +51,4 @@ def add_category(request):
     else:
         form = CategoryForm()
 
-    return render_to_response('rango/add_category.html', {'form': form}, context)
+    return render_to_response('rango/add_category.html', {'form': form,}, RequestContext(request, {}))
