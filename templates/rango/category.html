@@ -14,15 +14,18 @@
             {% for page in pages %}
                 <li><a href="{{ page.url }}">{{ page.title }}</a></li>
             {% endfor %}
+                <br />
+                <a href="">Add Page</a>
             </ul>
         {% else %}
-            <strong>No pages currently in category.</strong>
+            <strong>No pages currently in category. Please add one </strong>
+            <br />
+            <a href="add_page">Add Page</a>
         {% endif %}
     {% else %}
         The specified category {{ category_name }} does not exist!
     {% endif %}
 
-    <a href="">Add Page</a>
 </body>
 
 </html>

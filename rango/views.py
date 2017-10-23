@@ -6,7 +6,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie, requires_csrf_token
 
 
 def index(request):
-    category_list = Category.objects.order_by('-likes')[:5]
+    category_list = Category.objects.order_by('-likes')[:10]
     page_list = Page.objects.order_by('-views')[:5]
     context_dict = {'categories': category_list, "authorname": "Swati Goyal", "pages": page_list}
     for category in category_list:
