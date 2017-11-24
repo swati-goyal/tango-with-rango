@@ -6,6 +6,7 @@ from django.template import RequestContext
 # from django.views.decorators.csrf import ensure_csrf_cookie, requires_csrf_token
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from rango.models import Category, Page
+from datetime import datetime
 
 
 def index(request):
@@ -14,7 +15,21 @@ def index(request):
     context_dict = {'categories': category_list, "authorname": "Swati Goyal", "pages": page_list, 'user': request.user}
     for category in category_list:
         category.url = category.name.replace(' ', '_')
-    return render_to_response('rango/index.html', context_dict, RequestContext(request, {}))
+    response = render_to_response('rango/index.html', context_dict, RequestContext(request, {}))
+
+    # Counting user visits
+    visits = int(request.COOKIES.get('visits', 0))
+
+    if request.COOKIES in ['last_visit']:
+        last_visit = request.COOKIES['last_visit']
+        last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
+        if (datetime.now() - last_visit_time).days > 0:
+            response.set_cookie('visits', visits + 1)
+            response.set_cookie('last_visit', datetime.now())
+    else:
+        response.set_cookie('last_visit', datetime.now())
+
+    return response
 
 
 def about(request):
